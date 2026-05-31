@@ -4,77 +4,102 @@ import pandas as pd
 import streamlit as st
 
 # --- APP CONFIGURATION & CONSTANTS ---
-st.set_page_config(page_title="EM Asset Prep Tool", layout="wide")
+st.set_page_config(page_title="EM Bulk Upload Tool", page_icon="⚙️", layout="wide")
 
-# --- BITSIGHT BRANDING STYLING ---
+# --- ADVANCED BITSIGHT BRANDING & LAYOUT STYLING ---
 st.markdown(
     """
     <style>
-    /* Main App Background and Text colors */
+    /* Global Page Settings */
     .stApp {
         background-color: #FFFFFF;
         color: #111111;
     }
     
-    /* Headers & Title */
-    h1, h2, h3, h4 {
+    /* Elegant Frame for Content Blocks */
+    div[data-testid="stVerticalBlock"] > div {
+        background-color: #FAFAFA;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
+    }
+    
+    /* Clean Headers */
+    h1 {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-weight: 700;
+        font-weight: 800;
+        letter-spacing: -0.5px;
     }
     
-    /* Horizontal lines */
-    hr {
-        border-top: 2px solid #FF6600 !important;
-    }
-    
-    /* Inputs, text areas, dropdowns */
-    .stTextArea textarea, .stSelectbox div, .stTextInput input, div[data-baseweb="radio"] {
-        border-color: #111111 !important;
+    h2, h3, h4 {
         color: #111111 !important;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-weight: 600;
     }
     
-    /* Highlight/Focus on text elements */
-    .stTextArea textarea:focus {
+    /* BitSight Orange Horizontal Rule Accent */
+    hr {
+        border-top: 3px solid #FF6600 !important;
+        margin-top: 1rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Input Control Customization */
+    .stTextArea textarea, .stSelectbox div, .stTextInput input {
+        border: 1.5px solid #E0E0E0 !important;
+        border-radius: 6px !important;
+        color: #111111 !important;
+        background-color: #FFFFFF !important;
+    }
+    
+    /* Active Input Highlights */
+    .stTextArea textarea:focus, .stTextInput input:focus {
         border-color: #FF6600 !important;
-        box-shadow: 0 0 0 1px #FF6600 !important;
+        box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2) !important;
     }
     
-    /* Customizing the main action buttons */
+    /* Command Execution Button (Black -> Orange Hover) */
     div.stButton > button:first-child {
         background-color: #111111 !important;
         color: #FFFFFF !important;
-        border: 2px solid #111111 !important;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        padding: 0.5rem 2rem;
+        border: none !important;
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px;
+        transition: all 0.25s ease-in-out;
+        padding: 0.6rem 2.5rem !important;
+        width: 100%;
     }
     
     div.stButton > button:first-child:hover {
         background-color: #FF6600 !important;
-        border-color: #FF6600 !important;
         color: #FFFFFF !important;
-        box-shadow: 0px 4px 10px rgba(255, 102, 0, 0.3);
+        box-shadow: 0px 6px 15px rgba(255, 102, 0, 0.35);
+        transform: translateY(-1px);
     }
     
-    /* Customizing the Download button */
+    /* Direct Extraction Download Button (Always Orange -> Black Hover) */
     div[data-testid="stDownloadButton"] > button {
         background-color: #FF6600 !important;
         color: #FFFFFF !important;
-        border: 2px solid #FF6600 !important;
-        font-weight: bold;
-        padding: 0.5rem 2rem;
+        border: none !important;
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+        transition: all 0.25s ease-in-out;
+        padding: 0.6rem 2.5rem !important;
     }
     
     div[data-testid="stDownloadButton"] > button:hover {
         background-color: #111111 !important;
-        border-color: #111111 !important;
         color: #FFFFFF !important;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
     }
     
-    /* Alerts and Status tweaks */
-    .stAlert {
-        border-left: 5px solid #FF6600 !important;
+    /* Custom Styling for Radio Buttons Layout */
+    div[data-baseweb="radio"] {
+        gap: 1.5rem !important;
     }
     </style>
     """,
@@ -163,28 +188,20 @@ def process_assets(raw_input):
     return domains, ips_cidrs, rejected
 
 
-# --- UI LAYOUT ---
-st.title("🛡️ EM Asset Prep Helper")
-st.caption(
-    "Sanitize and format raw assets for EM Platform Bulk Uploads or Python Bulk Scripts."
-)
-
+# --- MAIN APPLICATION HEADER ---
+st.title("⚙️ EM Bulk Upload Tool")
+st.caption("High-performance data sanitization engine built tailored to the Entity Management system framework.")
 st.write("---")
 
-# Core workflow choices
+# --- BLOCK 1: WORKFLOW SPECIFICATION ---
+st.subheader("🛠️ Step 1: Target Profile Selection")
 workflow = st.radio(
-    "Select Target Workflow:",
+    "Identify your target execution destination profile:",
     ("Workflow A: EM Platform Uploads (With Headers)", "Workflow B: Python Bulk Script Tagger (No Headers)"),
+    label_visibility="collapsed"
 )
 
-st.write("---")
-
-# Input Fields
-raw_assets_input = st.text_area(
-    "Paste Raw Assets here (one per line, or comma-separated):", height=200
-)
-
-# Contextual forms based on choice
+# --- BLOCK 2: PARAMETER CONFIGURATION ---
 action = ""
 tag_slug = ""
 script_tag_type = ""
@@ -192,9 +209,12 @@ sub_workflow = ""
 end_date = ""
 domain_type = ""
 
+st.write("")
+st.subheader("📋 Step 2: Context Configuration")
+
 if "Workflow A" in workflow:
     sub_workflow = st.selectbox(
-        "Select Sub-Workflow Format:",
+        "Select Specific Action Sub-Workflow Target:",
         [
             "1. Entity Tags",
             "2. Entity Domain Tags",
@@ -216,34 +236,48 @@ if "Workflow A" in workflow:
             "5. Domain Tags (Global)",
             "6. CIDR Tags",
         ]:
-            action = st.selectbox("Action:", ["", "add", "remove"])
-            tag_slug = st.text_input("Tag Slug:")
+            action = st.selectbox("Action Operation Type:", ["", "add", "remove"])
+            tag_slug = st.text_input("Target System Tag Slug Name:")
         elif sub_workflow in ["3. End-Date Entity Domains", "7. End-Date CIDRs"]:
-            end_date = st.text_input("New End Date (YYYY-MM-DD):")
-            domain_type = st.selectbox("Domain Type (Optional):", [""] + VALID_DOMAIN_TYPES)
+            end_date = st.text_input("Assignment New End Date (YYYY-MM-DD):")
+            domain_type = st.selectbox("Domain Type Classification (Optional):", [""] + VALID_DOMAIN_TYPES)
         elif sub_workflow in ["4. Entity Domain Grace Periods", "8. CIDR Grace Periods"]:
-            end_date = st.text_input("Grace Period End Date (YYYY-MM-DD or - to remove):")
+            end_date = st.text_input("Grace Period Finalization Date (YYYY-MM-DD or '-' to remove):")
         elif sub_workflow == "9. CIDR Guest Networks":
-            end_date = st.text_input("Guest Network End Date (YYYY-MM-DD or - to remove):")
+            end_date = st.text_input("Guest Network Expiration Target Date (YYYY-MM-DD or '-' to remove):")
 
     with col2:
         if sub_workflow == "1. Entity Tags":
-            entity_id = st.text_input("Entity ID:")
+            entity_id = st.text_input("Target Platform Entity ID:")
 
 else:
-    script_tag_type = st.selectbox("Are these tags Public or Private?", ["", "Public", "Private"])
-    tag_slug = st.text_input("Tag Slug:")
+    col1, col2 = st.columns(2)
+    with col1:
+        script_tag_type = st.selectbox("Script Visibility Parameter (Public vs Private):", ["", "Public", "Private"])
+    with col2:
+        tag_slug = st.text_input("Script Pipeline Target Tag Slug:")
 
-# --- PROCESSING TRIGGER ---
-if st.button("⚡ Generate & Format Asset Configuration"):
+# --- BLOCK 3: ASSET STREAM INGESTION ---
+st.write("")
+st.subheader("📥 Step 3: Raw Asset Ingestion")
+raw_assets_input = st.text_area(
+    "Drop system lines here (Accepts unique newline entries or raw comma strings):",
+    placeholder="example.com\n192.0.2.1/24\nsubdomain.example.net",
+    height=180,
+    label_visibility="collapsed"
+)
+
+# --- EXECUTION SYSTEM PIPELINE ---
+st.write("")
+if st.button("⚡ Execute Structural Data Cleansing"):
     if not raw_assets_input.strip():
-        st.error("Please provide a list of raw assets to process.")
+        st.error("Operation Aborted: Raw asset ingestion field cannot be submitted blank.")
     else:
         domains, ips_cidrs, rejected = process_assets(raw_assets_input)
 
         if domains and ips_cidrs:
             st.error(
-                "🚨 **Asset Separation Alert:** Mixed list detected! Domains and CIDRs/IPs cannot be mixed in the same output file. Please process them separately."
+                "🚨 **Asset Separation Alert:** Mixed profiles tracked! Domains and CIDRs/IPs cannot be compressed into the same file array. Split inputs."
             )
 
         has_missing_info = False
@@ -252,16 +286,16 @@ if st.button("⚡ Generate & Format Asset Configuration"):
 
         if "Workflow A" in workflow:
             if sub_workflow in ["1. Entity Tags", "2. Entity Domain Tags", "5. Domain Tags (Global)", "6. CIDR Tags"] and (not action or not tag_slug):
-                st.error("❌ Stop Processing: Missing 'Action' or 'Tag Slug' values.")
+                st.error("❌ Process Halting Error: Target Operations or Tag Slugs require validation entries.")
                 has_missing_info = True
             if sub_workflow in ["3. End-Date Entity Domains", "7. End-Date CIDRs", "4. Entity Domain Grace Periods", "8. CIDR Grace Periods", "9. CIDR Guest Networks"] and not end_date:
-                st.error("❌ Stop Processing: Missing Required Target Date.")
+                st.error("❌ Process Halting Error: Required Expiration Reference Date Missing.")
                 has_missing_info = True
 
             if not has_missing_info:
                 if sub_workflow == "1. Entity Tags":
                     if not entity_id:
-                        st.error("❌ Stop Processing: Missing 'Entity ID'.")
+                        st.error("❌ Structural Hold: Target Platform Entity ID entry required.")
                     else:
                         output_str = "entity_id,action,tag_slug\n"
                         for d in domains:
@@ -309,28 +343,31 @@ if st.button("⚡ Generate & Format Asset Configuration"):
 
         else:
             if not script_tag_type or not tag_slug:
-                st.error("❌ Stop Processing: You must specify if the tags are Public/Private and define a Tag Slug.")
+                st.error("❌ Process Halting Error: Core Tagger Python variables must be selected before file compilation.")
                 has_missing_info = True
             else:
-                filename_suggestion = "bulk_script_upload.txt"
+                filename_suggestion = "tags.txt"
                 target_assets = domains if domains else ips_cidrs
                 for asset in target_assets:
                     output_str += f"{asset},{tag_slug}\n"
 
+        # Output Rendering Context
         if not has_missing_info and output_str:
-            st.success("✅ File generated perfectly!")
+            st.success("🎉 Matrix Configuration Mapping Success!")
             
-            st.subheader("📋 Output Content (Ready to Copy)")
+            st.subheader("📋 Output Stream (Prerender View)")
             st.code(output_str, language="csv")
 
             st.download_button(
-                label="📥 Download Output File",
+                label=f"📥 Download Normalized Configuration ({filename_suggestion})",
                 data=output_str,
                 file_name=filename_suggestion,
-                mime="text/csv" if "csv" in filename_suggestion else "text/plain"
+                mime="text/plain" if filename_suggestion.endswith(".txt") else "text/csv"
             )
 
+        # Rejected Elements Logger
         if rejected:
-            st.subheader("🚫 Rejected Assets (Removed during validation)")
-            rejected_df = pd.DataFrame(rejected, columns=["Asset Passed", "Reason Removed"])
+            st.write("")
+            st.subheader("🚫 Exception Handling Logs (Assets Scrubbed)")
+            rejected_df = pd.DataFrame(rejected, columns=["Raw Element Processed", "Scrubbing Engine Reason Rule"])
             st.dataframe(rejected_df, use_container_width=True)
