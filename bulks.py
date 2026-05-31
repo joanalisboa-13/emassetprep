@@ -6,7 +6,7 @@ import streamlit as st
 # --- APP CONFIGURATION & CONSTANTS ---
 st.set_page_config(page_title="EM Bulk Upload Tool", page_icon="⚙️", layout="wide")
 
-# --- ADVANCED BITSIGHT BRANDING & LAYOUT STYLING ---
+# --- ADVANCED BITSIGHT BRANDING & TIGHT SPACED LAYOUT ---
 st.markdown(
     """
     <style>
@@ -16,40 +16,56 @@ st.markdown(
         color: #111111;
     }
     
-    /* Elegant Frame for Content Blocks */
-    div[data-testid="stVerticalBlock"] > div {
-        background-color: #FAFAFA;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
-        margin-bottom: 1rem;
+    /* Tightened Frame Blocks - Reduced Padding and Margin */
+    div[data-testid="stVerticalBlock"] {
+        gap: 0.5rem !important;
     }
     
-    /* Clean Headers */
+    div[data-testid="stVerticalBlock"] > div {
+        background-color: #FAFAFA;
+        padding: 1rem 1.25rem !important;
+        border-radius: 6px;
+        box-shadow: 0px 1px 4px rgba(0,0,0,0.04);
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Tighten column gaps */
+    div[data-testid="stHorizontalBlock"] {
+        gap: 1rem !important;
+    }
+    
+    /* Headers & Title Spacing Fixes */
     h1 {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
         font-weight: 800;
-        letter-spacing: -0.5px;
+        margin-bottom: 0.2rem !important;
+        padding-bottom: 0px !important;
     }
     
     h2, h3, h4 {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
         font-weight: 600;
+        margin-top: 0px !important;
+        margin-bottom: 0.4rem !important;
+    }
+    
+    p, span, label {
+        margin-bottom: 0.2rem !important;
     }
     
     /* BitSight Orange Horizontal Rule Accent */
     hr {
         border-top: 3px solid #FF6600 !important;
-        margin-top: 1rem !important;
-        margin-bottom: 2rem !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 1rem !important;
     }
     
     /* Input Control Customization */
     .stTextArea textarea, .stSelectbox div, .stTextInput input {
         border: 1.5px solid #E0E0E0 !important;
-        border-radius: 6px !important;
+        border-radius: 4px !important;
         color: #111111 !important;
         background-color: #FFFFFF !important;
     }
@@ -57,7 +73,7 @@ st.markdown(
     /* Active Input Highlights */
     .stTextArea textarea:focus, .stTextInput input:focus {
         border-color: #FF6600 !important;
-        box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2) !important;
+        box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.1) !important;
     }
     
     /* Command Execution Button (Black -> Orange Hover) */
@@ -65,19 +81,18 @@ st.markdown(
         background-color: #111111 !important;
         color: #FFFFFF !important;
         border: none !important;
-        border-radius: 6px !important;
+        border-radius: 4px !important;
         font-weight: 700 !important;
-        letter-spacing: 0.5px;
-        transition: all 0.25s ease-in-out;
-        padding: 0.6rem 2.5rem !important;
+        transition: all 0.2s ease-in-out;
+        padding: 0.5rem 2rem !important;
         width: 100%;
+        margin-top: 0.5rem;
     }
     
     div.stButton > button:first-child:hover {
         background-color: #FF6600 !important;
         color: #FFFFFF !important;
-        box-shadow: 0px 6px 15px rgba(255, 102, 0, 0.35);
-        transform: translateY(-1px);
+        box-shadow: 0px 4px 12px rgba(255, 102, 0, 0.3);
     }
     
     /* Direct Extraction Download Button (Always Orange -> Black Hover) */
@@ -85,21 +100,15 @@ st.markdown(
         background-color: #FF6600 !important;
         color: #FFFFFF !important;
         border: none !important;
-        border-radius: 6px !important;
+        border-radius: 4px !important;
         font-weight: 700 !important;
-        transition: all 0.25s ease-in-out;
-        padding: 0.6rem 2.5rem !important;
+        transition: all 0.2s ease-in-out;
+        padding: 0.5rem 2rem !important;
     }
     
     div[data-testid="stDownloadButton"] > button:hover {
         background-color: #111111 !important;
         color: #FFFFFF !important;
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Custom Styling for Radio Buttons Layout */
-    div[data-baseweb="radio"] {
-        gap: 1.5rem !important;
     }
     </style>
     """,
@@ -209,7 +218,6 @@ sub_workflow = ""
 end_date = ""
 domain_type = ""
 
-st.write("")
 st.subheader("📋 Step 2: Context Configuration")
 
 if "Workflow A" in workflow:
@@ -258,17 +266,15 @@ else:
         tag_slug = st.text_input("Script Pipeline Target Tag Slug:")
 
 # --- BLOCK 3: ASSET STREAM INGESTION ---
-st.write("")
 st.subheader("📥 Step 3: Raw Asset Ingestion")
 raw_assets_input = st.text_area(
     "Drop system lines here (Accepts unique newline entries or raw comma strings):",
     placeholder="example.com\n192.0.2.1/24\nsubdomain.example.net",
-    height=180,
+    height=140,
     label_visibility="collapsed"
 )
 
 # --- EXECUTION SYSTEM PIPELINE ---
-st.write("")
 if st.button("⚡ Execute Structural Data Cleansing"):
     if not raw_assets_input.strip():
         st.error("Operation Aborted: Raw asset ingestion field cannot be submitted blank.")
@@ -367,7 +373,6 @@ if st.button("⚡ Execute Structural Data Cleansing"):
 
         # Rejected Elements Logger
         if rejected:
-            st.write("")
             st.subheader("🚫 Exception Handling Logs (Assets Scrubbed)")
             rejected_df = pd.DataFrame(rejected, columns=["Raw Element Processed", "Scrubbing Engine Reason Rule"])
             st.dataframe(rejected_df, use_container_width=True)
