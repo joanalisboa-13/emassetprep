@@ -6,14 +6,20 @@ import streamlit as st
 # --- APP CONFIGURATION & CONSTANTS ---
 st.set_page_config(page_title="EM Bulk Upload Tool", page_icon="⚙️", layout="wide")
 
-# --- ADVANCED BITSIGHT BRANDING & TIGHT SPACED LAYOUT ---
+# --- ADVANCED BITSIGHT BRANDING & CONTRAST TEXT FIX ---
 st.markdown(
     """
     <style>
     /* Global Page Settings */
     .stApp {
-        background-color: #FFFFFF;
-        color: #111111;
+        background-color: #FFFFFF !important;
+        color: #111111 !important;
+    }
+    
+    /* Force ALL text labels, captions, and Markdown elements to be dark/visible */
+    .stApp p, .stApp span, .stApp label, .stApp div, .stApp caption, .stMarkdown {
+        color: #111111 !important;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
     }
     
     /* Tightened Frame Blocks - Reduced Padding and Margin */
@@ -22,11 +28,12 @@ st.markdown(
     }
     
     div[data-testid="stVerticalBlock"] > div {
-        background-color: #FAFAFA;
+        background-color: #FAFAFA !important;
         padding: 1rem 1.25rem !important;
         border-radius: 6px;
         box-shadow: 0px 1px 4px rgba(0,0,0,0.04);
         margin-bottom: 0.5rem !important;
+        border: 1px solid #EEEEEE !important;
     }
     
     /* Tighten column gaps */
@@ -34,7 +41,7 @@ st.markdown(
         gap: 1rem !important;
     }
     
-    /* Headers & Title Spacing Fixes */
+    /* Headers & Title Spacing/Color Fixes */
     h1 {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -46,13 +53,19 @@ st.markdown(
     h2, h3, h4 {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-weight: 600;
+        font-weight: 600 !important;
         margin-top: 0px !important;
         margin-bottom: 0.4rem !important;
     }
     
-    p, span, label {
-        margin-bottom: 0.2rem !important;
+    /* Specific override for Radio button text readability */
+    div[data-testid="stWidgetLabel"] p {
+        color: #111111 !important;
+        font-weight: 600 !important;
+    }
+    
+    div[data-baseweb="radio"] label {
+        color: #111111 !important;
     }
     
     /* BitSight Orange Horizontal Rule Accent */
@@ -64,7 +77,7 @@ st.markdown(
     
     /* Input Control Customization */
     .stTextArea textarea, .stSelectbox div, .stTextInput input {
-        border: 1.5px solid #E0E0E0 !important;
+        border: 1.5px solid #CCCCCC !important;
         border-radius: 4px !important;
         color: #111111 !important;
         background-color: #FFFFFF !important;
