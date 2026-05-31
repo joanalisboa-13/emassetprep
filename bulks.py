@@ -6,23 +6,22 @@ import streamlit as st
 # --- APP CONFIGURATION & CONSTANTS ---
 st.set_page_config(page_title="EM Bulk Upload Tool", page_icon="⚙️", layout="wide")
 
-# --- ADVANCED BITSIGHT BRANDING & CONTRAST TEXT FIX ---
+# --- ADVANCED BITSIGHT BRANDING & FINAL CONTRAST FIX ---
 st.markdown(
     """
     <style>
     /* Global Page Settings */
     .stApp {
         background-color: #FFFFFF !important;
-        color: #111111 !important;
     }
     
-    /* Force ALL text labels, captions, and Markdown elements to be dark/visible */
-    .stApp p, .stApp span, .stApp label, .stApp div, .stApp caption, .stMarkdown {
+    /* Target only structural/display text labels, excluding buttons */
+    .stApp p, .stApp span, .stApp label, .stApp caption, .stMarkdown, div[data-testid="stWidgetLabel"] p {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
     }
     
-    /* Tightened Frame Blocks - Reduced Padding and Margin */
+    /* Frame Blocks for content structuring */
     div[data-testid="stVerticalBlock"] {
         gap: 0.5rem !important;
     }
@@ -42,30 +41,20 @@ st.markdown(
     }
     
     /* Headers & Title Spacing/Color Fixes */
-    h1 {
+    h1, h2, h3, h4 {
         color: #111111 !important;
         font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-weight: 800;
-        margin-bottom: 0.2rem !important;
-        padding-bottom: 0px !important;
-    }
-    
-    h2, h3, h4 {
-        color: #111111 !important;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-weight: 600 !important;
         margin-top: 0px !important;
         margin-bottom: 0.4rem !important;
     }
     
-    /* Specific override for Radio button text readability */
-    div[data-testid="stWidgetLabel"] p {
-        color: #111111 !important;
-        font-weight: 600 !important;
+    h1 {
+        font-weight: 800 !important;
+        margin-bottom: 0.2rem !important;
     }
     
-    div[data-baseweb="radio"] label {
-        color: #111111 !important;
+    h2, h3, h4 {
+        font-weight: 600 !important;
     }
     
     /* BitSight Orange Horizontal Rule Accent */
@@ -89,10 +78,9 @@ st.markdown(
         box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.1) !important;
     }
     
-    /* Command Execution Button (Black -> Orange Hover) */
+    /* Command Execution Button (Forcing strict White Text) */
     div.stButton > button:first-child {
         background-color: #111111 !important;
-        color: #FFFFFF !important;
         border: none !important;
         border-radius: 4px !important;
         font-weight: 700 !important;
@@ -102,16 +90,18 @@ st.markdown(
         margin-top: 0.5rem;
     }
     
+    div.stButton > button:first-child p, div.stButton > button:first-child span {
+        color: #FFFFFF !important;
+    }
+    
     div.stButton > button:first-child:hover {
         background-color: #FF6600 !important;
-        color: #FFFFFF !important;
         box-shadow: 0px 4px 12px rgba(255, 102, 0, 0.3);
     }
     
-    /* Direct Extraction Download Button (Always Orange -> Black Hover) */
+    /* Direct Extraction Download Button (Forcing strict White Text) */
     div[data-testid="stDownloadButton"] > button {
         background-color: #FF6600 !important;
-        color: #FFFFFF !important;
         border: none !important;
         border-radius: 4px !important;
         font-weight: 700 !important;
@@ -119,9 +109,12 @@ st.markdown(
         padding: 0.5rem 2rem !important;
     }
     
+    div[data-testid="stDownloadButton"] > button p, div[data-testid="stDownloadButton"] > button span {
+        color: #FFFFFF !important;
+    }
+    
     div[data-testid="stDownloadButton"] > button:hover {
         background-color: #111111 !important;
-        color: #FFFFFF !important;
     }
     </style>
     """,
